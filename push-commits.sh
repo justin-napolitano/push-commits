@@ -119,17 +119,17 @@ push_committed_changes() {
             fi
         else
             # Check if there are committed changes to push on the current branch
-            if git log "origin/$branch"..HEAD | grep -q "."; then
-                echo "    Committed changes found on branch $branch in $repo_dir"
-                # Check if remote branch exists, create if it doesn't
-                if ! remote_branch_exists "$branch" "$repo_dir"; then
-                    git push --set-upstream origin "$branch"
-                else
+            if remote_branch_exists "$branch" "$repo_dir"; then
+                if git log origin/"$branch"..HEAD | grep -q "."; then
+                    echo "    Committed changes found on branch $branch in $repo_dir"
                     git push origin "$branch"
+                    echo "    Changes have been pushed to remote branch $branch in $repo_dir"
+                else
+                    echo "    No committed changes to push on branch $branch in $repo_dir"
                 fi
-                echo "    Changes have been pushed to remote branch $branch in $repo_dir"
             else
-                echo "    No committed changes to push on branch $branch in $repo_dir"
+                echo "    Remote branch $branch does not exist, pushing for the first time"
+                git push --set-upstream origin "$branch"
             fi
         fi
     done
