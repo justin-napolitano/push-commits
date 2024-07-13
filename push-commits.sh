@@ -108,7 +108,7 @@ push_committed_changes() {
 
                 # Check if remote branch bad-practice exists, create if it doesn't
                 if ! remote_branch_exists "bad-practice" "$repo_dir"; then
-                    git push origin bad-practice
+                    git push --set-upstream origin bad-practice
                 else
                     git push origin bad-practice
                 fi
@@ -119,7 +119,7 @@ push_committed_changes() {
             fi
         else
             # Check if there are committed changes to push on the current branch
-            if git log origin/"$branch"..HEAD | grep -q "."; then
+            if git log "origin/$branch"..HEAD | grep -q "."; then
                 echo "    Committed changes found on branch $branch in $repo_dir"
                 # Check if remote branch exists, create if it doesn't
                 if ! remote_branch_exists "$branch" "$repo_dir"; then
