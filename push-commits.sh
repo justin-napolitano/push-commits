@@ -82,6 +82,9 @@ push_committed_changes() {
         return
     fi
 
+    # Fetch remote branches
+    git fetch origin
+
     # Get all branches
     branches=$(git for-each-ref --format='%(refname:short)' refs/heads/)
 
