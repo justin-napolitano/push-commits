@@ -7,7 +7,7 @@ DEFAULT_ROOT_DIR="/home/cobra/Repos"
 BLACKLIST_FILE="/etc/commit_push_blacklist.conf"
 
 # Define the GitHub username to check against
-GITHUB_USERNAME="your_github_username"
+GITHUB_USERNAME="justin-napolitano"
 
 # Parse arguments
 LOCAL_MODE=false
