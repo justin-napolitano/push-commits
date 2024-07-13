@@ -34,7 +34,7 @@ export GITHUB_USERNAME
 # Function to check if a repository is blacklisted
 is_blacklisted() {
     local repo_dir=$1
-    echo "    Checking for Blacklisted $repo_dir in $BLACKLIST_FILE"
+    echo "    Checking if $repo_dir is blacklisted in $BLACKLIST_FILE"
     if [ -z "$BLACKLIST_FILE" ]; then
         echo "    BLACKLIST_FILE is not set"
         return 1
@@ -44,13 +44,6 @@ is_blacklisted() {
         return 1
     fi
     grep -qxF "$repo_dir" "$BLACKLIST_FILE"
-    local result=$?
-    if [ $result -eq 0 ]; then
-        echo "    $repo_dir is blacklisted"
-    else
-        echo "    $repo_dir is not blacklisted"
-    fi
-    return $result
 }
 
 # Function to check if a repository belongs to the specified user
@@ -112,6 +105,9 @@ push_committed_changes() {
         return
     fi
 
+    # Get the current branch
+    # original_branch=$(git symbolic-ref --short HEAD)
+
     # Pull all branches first
     pull_all_branches "$repo_dir"
 
@@ -124,11 +120,34 @@ push_committed_changes() {
         # Handle uncommitted changes
         if [ -n "$(git status --porcelain)" ]; then
             echo "    Uncommitted changes found on branch $branch in $repo_dir"
-            git checkout -b uncommitted
+
+            # Stash the uncommitted changes
+            git stash -u
+            echo "    Uncommitted changes stashed."
+
+            # Create a unique branch name for the uncommitted changes
+            new_branch="uncommitted-${branch}-$(date +%Y%m%d%H%M%S)"
+
+            # Create and checkout the new branch
+            git checkout -b "$new_branch"
+            echo "    Switched to new branch $new_branch."
+
+            # Apply the stashed changes
+            git stash pop
+            echo "    Stashed changes applied to $new_branch."
+
+            # Commit the changes
             git add .
             git commit -m "Uncommitted changes from branch $branch"
-            git push --set-upstream origin uncommitted
-            echo "    Uncommitted changes have been committed and pushed to uncommitted branch in $repo_dir"
+            echo "    Uncommitted changes committed to $new_branch."
+
+            # Push the new branch to the remote repository
+            git push --set-upstream origin "$new_branch"
+            echo "    Uncommitted changes have been pushed to $new_branch in $repo_dir."
+
+            # # Switch back to the original branch
+            # git checkout "$branch"
+            # echo "    Switched back to branch $branch."
         fi
 
         if [ "$branch" == "main" ]; then
@@ -136,17 +155,39 @@ push_committed_changes() {
             if git log origin/main..HEAD | grep -q "."; then
                 echo "    Committed changes found on main branch in $repo_dir"
 
-                # Create and switch to the bad-practice branch
-                git checkout -b bad-practice
+                # Stash any uncommitted changes before switching branches
+                git stash -u
+                echo "    Uncommitted changes stashed from main branch."
 
-                # Check if remote branch bad-practice exists, create if it doesn't
-                if ! remote_branch_exists "bad-practice" "$repo_dir"; then
-                    git push --set-upstream origin bad-practice
-                else
-                    git push origin bad-practice
+                # Create a unique branch name for the bad-practice changes
+                bad_practice_branch="bad-practice-$(date +%Y%m%d%H%M%S)"
+
+                # Create and switch to the bad-practice branch
+                git checkout -b "$bad_practice_branch"
+                echo "    Switched to new branch $bad_practice_branch."
+
+                # Apply the stashed changes, if any
+                git stash pop
+                echo "    Stashed changes applied to $bad_practice_branch."
+
+                # Commit any stashed changes
+                if [ -n "$(git status --porcelain)" ]; then
+                    git add .
+                    git commit -m "Bad-practice changes from main branch"
+                    echo "    Bad-practice changes committed to $bad_practice_branch."
                 fi
 
-                echo "    Changes have been moved to and pushed on the bad-practice branch in $repo_dir"
+                # Push the bad-practice branch to the remote repository
+                if ! remote_branch_exists "$bad_practice_branch" "$repo_dir"; then
+                    git push --set-upstream origin "$bad_practice_branch"
+                else
+                    git push origin "$bad_practice_branch"
+                fi
+                echo "    Changes have been moved to and pushed on the $bad_practice_branch branch in $repo_dir."
+
+                # Switch back to the main branch
+                git checkout main
+                echo "    Switched back to main branch."
             else
                 echo "    No committed changes to push on the main branch in $repo_dir"
             fi
@@ -166,6 +207,10 @@ push_committed_changes() {
             fi
         fi
     done
+
+    # # Switch back to the original branch
+    # git checkout "$original_branch"
+    # echo "Switched back to the original branch $original_branch."
 
     cd - || return
 }
