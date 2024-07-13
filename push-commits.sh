@@ -64,6 +64,14 @@ belongs_to_user() {
     fi
 }
 
+# Function to check if a remote branch exists
+remote_branch_exists() {
+    local branch=$1
+    local repo_dir=$2
+    git -C "$repo_dir" ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1
+    return $?
+}
+
 # Function to push only committed changes across all branches
 push_committed_changes() {
     local repo_dir=$1
@@ -98,8 +106,12 @@ push_committed_changes() {
                 # Create and switch to the bad-practice branch
                 git checkout -b bad-practice
 
-                # Push the bad-practice branch to the remote
-                git push origin bad-practice
+                # Check if remote branch bad-practice exists, create if it doesn't
+                if ! remote_branch_exists "bad-practice" "$repo_dir"; then
+                    git push origin bad-practice
+                else
+                    git push origin bad-practice
+                fi
 
                 echo "    Changes have been moved to and pushed on the bad-practice branch in $repo_dir"
             else
@@ -109,7 +121,12 @@ push_committed_changes() {
             # Check if there are committed changes to push on the current branch
             if git log origin/"$branch"..HEAD | grep -q "."; then
                 echo "    Committed changes found on branch $branch in $repo_dir"
-                git push origin "$branch"
+                # Check if remote branch exists, create if it doesn't
+                if ! remote_branch_exists "$branch" "$repo_dir"; then
+                    git push --set-upstream origin "$branch"
+                else
+                    git push origin "$branch"
+                fi
                 echo "    Changes have been pushed to remote branch $branch in $repo_dir"
             else
                 echo "    No committed changes to push on branch $branch in $repo_dir"
@@ -124,6 +141,7 @@ push_committed_changes() {
 export -f push_committed_changes
 export -f is_blacklisted
 export -f belongs_to_user
+export -f remote_branch_exists
 
 if $LOCAL_MODE; then
     echo "Running in local mode. Processing the current working directory."
