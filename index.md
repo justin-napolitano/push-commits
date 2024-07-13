@@ -4,7 +4,7 @@ description = "Utility script to update all repos within a directory."
 author = "Justin Napolitano"
 tags = ["scripting","bash"]
 images = ["images/feature-image.png"]
-date = "2024-07-13"
+date = "2024-07-13T14:23:45Z"
 categories = ["projects"]
 series = ["bash"]
 +++
