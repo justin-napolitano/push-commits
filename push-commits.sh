@@ -9,8 +9,23 @@ BLACKLIST_FILE="/etc/commit_push_blacklist.conf"
 # Define the GitHub username to check against
 GITHUB_USERNAME="justin-napolitano"
 
-# Use the provided argument as the root directory, or the default if none is provided
-ROOT_DIR=${1:-$DEFAULT_ROOT_DIR}
+# Parse arguments
+LOCAL_MODE=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --local)
+            LOCAL_MODE=true
+            shift
+            ;;
+        *)
+            ROOT_DIR=$1
+            shift
+            ;;
+    esac
+done
+
+# Set ROOT_DIR to default if not set
+ROOT_DIR=${ROOT_DIR:-$DEFAULT_ROOT_DIR}
 
 # Export the BLACKLIST_FILE and GITHUB_USERNAME variables so they are available in subshells
 export BLACKLIST_FILE
@@ -107,15 +122,20 @@ export -f push_committed_changes
 export -f is_blacklisted
 export -f belongs_to_user
 
-echo "Starting push process for repositories in $ROOT_DIR"
+if $LOCAL_MODE; then
+    echo "Running in local mode. Processing the current working directory."
+    push_committed_changes "$(pwd)"
+else
+    echo "Starting push process for repositories in $ROOT_DIR"
 
-# Ensure the blacklist file exists
-if [ ! -f "$BLACKLIST_FILE" ]; then
-    echo "Blacklist file not found: $BLACKLIST_FILE"
-    exit 1
+    # Ensure the blacklist file exists
+    if [ ! -f "$BLACKLIST_FILE" ]; then
+        echo "Blacklist file not found: $BLACKLIST_FILE"
+        exit 1
+    fi
+
+    # Find all .git directories and push committed changes across all branches
+    find "$ROOT_DIR" -name ".git" -type d -exec bash -c 'push_committed_changes "$(dirname "{}")"' \;
 fi
-
-# Find all .git directories and push committed changes across all branches
-find "$ROOT_DIR" -name ".git" -type d -exec bash -c 'push_committed_changes "$(dirname "{}")"' \;
 
 echo "All repositories processed."
