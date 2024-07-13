@@ -124,11 +124,34 @@ push_committed_changes() {
         # Handle uncommitted changes
         if [ -n "$(git status --porcelain)" ]; then
             echo "    Uncommitted changes found on branch $branch in $repo_dir"
-            git checkout -b uncommitted
+
+            # Stash the uncommitted changes
+            git stash -u
+            echo "    Uncommitted changes stashed."
+
+            # Create a unique branch name for the uncommitted changes
+            new_branch="uncommitted-$(date +%Y%m%d%H%M%S)"
+
+            # Create and checkout the new branch
+            git checkout -b "$new_branch"
+            echo "    Switched to new branch $new_branch."
+
+            # Apply the stashed changes
+            git stash pop
+            echo "    Stashed changes applied to $new_branch."
+
+            # Commit the changes
             git add .
             git commit -m "Uncommitted changes from branch $branch"
-            git push --set-upstream origin uncommitted
-            echo "    Uncommitted changes have been committed and pushed to uncommitted branch in $repo_dir"
+            echo "    Uncommitted changes committed to $new_branch."
+
+            # Push the new branch to the remote repository
+            git push --set-upstream origin "$new_branch"
+            echo "    Uncommitted changes have been pushed to $new_branch in $repo_dir."
+
+            # Switch back to the original branch
+            git checkout "$branch"
+            echo "    Switched back to branch $branch."
         fi
 
         if [ "$branch" == "main" ]; then
