@@ -208,9 +208,9 @@ push_committed_changes() {
         fi
     done
 
-    # Switch back to the original branch
-    git checkout "$original_branch"
-    echo "Switched back to the original branch $original_branch."
+    # # Switch back to the original branch
+    # git checkout "$original_branch"
+    # echo "Switched back to the original branch $original_branch."
 
     cd - || return
 }
