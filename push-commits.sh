@@ -72,6 +72,28 @@ remote_branch_exists() {
     return $?
 }
 
+# Function to pull all branches
+pull_all_branches() {
+    local repo_dir=$1
+    echo "Pulling updates in $repo_dir"
+    cd "$repo_dir" || return
+    
+    # Fetch all branches
+    git fetch --all
+    
+    # Get a list of all branches
+    branches=$(git branch -r | grep -v '\->')
+    
+    # Checkout and pull each branch
+    for branch in $branches; do
+        local_branch=${branch#origin/}
+        git checkout "$local_branch" || git checkout -b "$local_branch" "origin/$local_branch"
+        git pull origin "$local_branch"
+    done
+    
+    cd - || return
+}
+
 # Function to push only committed changes across all branches
 push_committed_changes() {
     local repo_dir=$1
@@ -90,14 +112,25 @@ push_committed_changes() {
         return
     fi
 
-    # Fetch remote branches
-    git fetch origin
+    # Pull all branches first
+    pull_all_branches "$repo_dir"
 
     # Get all branches
     branches=$(git for-each-ref --format='%(refname:short)' refs/heads/)
 
     for branch in $branches; do
         git checkout "$branch"
+
+        # Handle uncommitted changes
+        if [ -n "$(git status --porcelain)" ]; then
+            echo "    Uncommitted changes found on branch $branch in $repo_dir"
+            git checkout -b uncommitted
+            git add .
+            git commit -m "Uncommitted changes from branch $branch"
+            git push --set-upstream origin uncommitted
+            echo "    Uncommitted changes have been committed and pushed to uncommitted branch in $repo_dir"
+        fi
+
         if [ "$branch" == "main" ]; then
             # Check if there are committed changes on the main branch
             if git log origin/main..HEAD | grep -q "."; then
@@ -139,6 +172,7 @@ push_committed_changes() {
 
 # Export the functions so they can be used by find -exec
 export -f push_committed_changes
+export -f pull_all_branches
 export -f is_blacklisted
 export -f belongs_to_user
 export -f remote_branch_exists
