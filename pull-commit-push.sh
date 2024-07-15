@@ -87,6 +87,37 @@ pull_all_branches() {
     cd - || return
 }
 
+
+# Function to delete local branches not on GitHub
+sync_branches() {
+    local repo_dir=$1
+    echo "Deleting local branches not on GitHub in $repo_dir"
+    cd "$repo_dir" || return
+    
+    # Function to check if a branch exists on the remote
+    remote_branch_exists() {
+        local branch=$1
+        git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1
+        return $?
+    }
+
+    # Get all local branches except the current one
+    local_branches=$(git branch | grep -v "^\*")
+
+    for branch in $local_branches; do
+        branch=$(echo "$branch" | sed 's/^[ \t]*//;s/[ \t]*$//')  # Trim leading and trailing whitespaces
+        if ! remote_branch_exists "$branch"; then
+            echo "    Deleting local branch: $branch"
+            git branch -d "$branch"
+        fi
+    done
+
+    echo "Cleanup complete."
+
+    cd - || return
+}
+
+
 # Function to push only committed changes across all branches
 push_committed_changes() {
     local repo_dir=$1
@@ -110,6 +141,9 @@ push_committed_changes() {
 
     # Pull all branches first
     pull_all_branches "$repo_dir"
+
+    # Delete local branches not on GitHub
+    sync_branches "$repo_dir"
 
     # Get all branches
     branches=$(git for-each-ref --format='%(refname:short)' refs/heads/)
