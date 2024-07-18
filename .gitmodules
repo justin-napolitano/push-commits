@@ -1,0 +1,3 @@
+[submodule "content/posts/exercise"]
+	path = content/posts/exercise
+	url = https://github.com/justin-napolitano/exercise.git
