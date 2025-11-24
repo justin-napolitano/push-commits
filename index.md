@@ -18,6 +18,13 @@ seoSecondaryKeywords:
   - multi-repository git
   - bash git script
 seoOptimized: true
+topicFamily: automation
+topicFamilyConfidence: 0.95
+topicFamilyNotes: >-
+  The post describes a Bash script that automates Git workflows across multiple repositories,
+  fitting perfectly within the 'Automation' family which covers scripts automating build,
+  deployment, and git workflows. The content's emphasis on scripted push and branch management
+  aligns well with example slugs and suggested tags under the 'automation' category.
 ---
 
 # Push Committed and Uncommitted Changes Script: Technical Overview
@@ -96,3 +103,4 @@ The script traverses a root directory containing multiple git repositories. For 
 ## Summary
 
 The `push-commits` script automates routine git operations across multiple repositories, improving efficiency and enforcing safer git workflows. It leverages Bash and git CLI commands to pull all branches, detect and push committed and uncommitted changes, and respects repository ownership and blacklisting. While functional, it could benefit from enhanced configurability, error handling, and documentation for broader adoption.
+
