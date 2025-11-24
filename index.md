@@ -1,12 +1,24 @@
 ---
-slug: "github-push-commits"
-title: "push-commits"
-repo: "justin-napolitano/push-commits"
-githubUrl: "https://github.com/justin-napolitano/push-commits"
-generatedAt: "2025-11-23T09:29:09.060999Z"
-source: "github-auto"
+slug: github-push-commits
+title: Bash Script to Push Committed and Uncommitted Changes Across Multiple Git Repositories
+repo: justin-napolitano/push-commits
+githubUrl: https://github.com/justin-napolitano/push-commits
+generatedAt: '2025-11-23T09:29:09.060999Z'
+source: github-auto
+summary: >-
+  Overview of a Bash script that automates pushing committed and uncommitted changes across multiple
+  git repositories with branch handling and blacklist support.
+tags:
+  - bash
+  - git
+  - git-branches
+seoPrimaryKeyword: push committed and uncommitted changes script
+seoSecondaryKeywords:
+  - git automation
+  - multi-repository git
+  - bash git script
+seoOptimized: true
 ---
-
 
 # Push Committed and Uncommitted Changes Script: Technical Overview
 
