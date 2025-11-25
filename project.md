@@ -1,20 +1,27 @@
 ---
 slug: github-push-commits
 id: github-push-commits
-title: Push Committed and Uncommitted Changes Script
+title: Automate Git Repository Updates with Bash Script
 repo: justin-napolitano/push-commits
 githubUrl: https://github.com/justin-napolitano/push-commits
 generatedAt: '2025-11-24T21:36:03.627Z'
 source: github-auto
 summary: >-
-  A Bash script designed to automate the process of updating multiple Git
-  repositories within a directory. It pulls all branches, detects committed and
-  uncommitted changes, and pushes those changes to the remote repositories with
-  specific handling for uncommitted changes and the main branch.
-tags: []
-seoPrimaryKeyword: ''
-seoSecondaryKeywords: []
-seoOptimized: false
+  A Bash script to automate updating multiple Git repositories, handling commits
+  and uncommitted changes efficiently.
+tags:
+  - bash
+  - git
+  - repository management
+  - scripting
+seoPrimaryKeyword: git repository automation script
+seoSecondaryKeywords:
+  - bash script for git
+  - automate git commits
+  - git push multiple repos
+  - git branch management
+  - repository update automation
+seoOptimized: true
 topicFamily: null
 topicFamilyConfidence: null
 kind: project
