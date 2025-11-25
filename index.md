@@ -1,30 +1,36 @@
 ---
 slug: github-push-commits
-title: Bash Script to Push Committed and Uncommitted Changes Across Multiple Git Repositories
+title: Automating Git Push for Committed and Uncommitted Changes
 repo: justin-napolitano/push-commits
 githubUrl: https://github.com/justin-napolitano/push-commits
 generatedAt: '2025-11-23T09:29:09.060999Z'
 source: github-auto
 summary: >-
-  Overview of a Bash script that automates pushing committed and uncommitted changes across multiple
-  git repositories with branch handling and blacklist support.
+  This script automates pushing committed and uncommitted changes across
+  multiple git repositories, improving workflow efficiency.
 tags:
   - bash
   - git
   - git-branches
-seoPrimaryKeyword: push committed and uncommitted changes script
+  - repository management
+seoPrimaryKeyword: git push automation script
 seoSecondaryKeywords:
-  - git automation
-  - multi-repository git
-  - bash git script
+  - automate git push
+  - manage multiple repositories
+  - uncommitted changes handling
+  - git branch management
+  - repository blacklist
 seoOptimized: true
 topicFamily: automation
 topicFamilyConfidence: 0.95
 topicFamilyNotes: >-
-  The post describes a Bash script that automates Git workflows across multiple repositories,
-  fitting perfectly within the 'Automation' family which covers scripts automating build,
-  deployment, and git workflows. The content's emphasis on scripted push and branch management
-  aligns well with example slugs and suggested tags under the 'automation' category.
+  The post describes a Bash script that automates Git workflows across multiple
+  repositories, fitting perfectly within the 'Automation' family which covers
+  scripts automating build, deployment, and git workflows. The content's
+  emphasis on scripted push and branch management aligns well with example slugs
+  and suggested tags under the 'automation' category.
+kind: project
+id: github-push-commits
 ---
 
 # Push Committed and Uncommitted Changes Script: Technical Overview
