@@ -7,8 +7,8 @@ githubUrl: https://github.com/justin-napolitano/push-commits
 generatedAt: '2025-11-24T21:36:03.627Z'
 source: github-auto
 summary: >-
-  A Bash script to automate updating multiple Git repositories, handling commits
-  and uncommitted changes efficiently.
+  A Bash script to automate updating multiple Git repositories, handling commits and uncommitted
+  changes efficiently.
 tags:
   - bash
   - git
@@ -22,8 +22,8 @@ seoSecondaryKeywords:
   - git branch management
   - repository update automation
 seoOptimized: true
-topicFamily: null
-topicFamilyConfidence: null
+topicFamily: automation
+topicFamilyConfidence: 0.9
 kind: project
 entryLayout: project
 showInProjects: true
@@ -103,3 +103,4 @@ Example:
 ---
 
 *Note: Some assumptions were made about the behavior of `--local` mode and blacklist file format based on partial script content.*
+
